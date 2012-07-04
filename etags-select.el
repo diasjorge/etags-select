@@ -175,12 +175,13 @@ Only works with GNU Emacs."
 
 (defun etags-select-insert-matches (tagname tag-file tag-count)
   "Insert matches to tagname in tag-file."
-  (let ((tag-table-buffer (etags-select-get-tag-table-buffer tag-file))
-        (tag-file-path (file-name-directory tag-file))
-        (tag-regex (concat "^.*?\\(" "\^?\\(.+[:.']" tagname "\\)\^A"
-                           "\\|" "\^?" tagname "\^A"
-                           "\\|" "\\<" tagname "[ \f\t()=,;]*\^?[0-9,]"
-                           "\\)"))
+  (let* ((escaped-tagname (replace-regexp-in-string "?" "\\\\?" tagname))
+         (tag-table-buffer (etags-select-get-tag-table-buffer tag-file))
+         (tag-file-path (file-name-directory tag-file))
+         (tag-regex (concat "^.*?\\(" "\^?\\(.+[:.']" escaped-tagname "\\)\^A"
+                            "\\|" "\^?" escaped-tagname "\^A"
+                            "\\|" "\\<" escaped-tagname "[ \f\t()=,;]*\^?[0-9,]"
+                            "\\)"))
         (case-fold-search (etags-select-case-fold-search))
         full-tagname tag-line filename current-filename)
     (set-buffer tag-table-buffer)
